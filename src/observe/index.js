@@ -1,5 +1,5 @@
 import { arrayMethods } from "./array"
-
+import { Dep } from "./dep"
 export function observer(data){
   if(typeof data !== 'object' || data === null){
     return data
@@ -13,6 +13,7 @@ class Observer {
       value: this,
       enumerable: false
     })
+    this.dep = new Dep()
     this.value = value
     // 判断数组
     if(Array.isArray(value)){
@@ -38,9 +39,16 @@ class Observer {
 }
 
 function defineReactive(data, key, value){
-  observer(value)
+  let childDep = observer(value)  // 递归实现深度代理
+  const dep = new Dep()
   Object.defineProperty(data, key, {
     get(){
+      if(Dep.target){
+        dep.depend()
+        if(childDep.dep){
+          childDep.dep.depend()
+        }
+      }
       return value
     },
     set(newValue){
@@ -49,6 +57,7 @@ function defineReactive(data, key, value){
       }
       observer(newValue)
       value = newValue
+      dep.notify()
     }
   })
 }

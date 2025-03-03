@@ -35,9 +35,9 @@ methods.forEach(method => {
     if(inserted){
       ob.observeArray(inserted)
     }
-    return result
     // 数组修改后，通知视图更新
-    // this.__ob__.dep.notify()
+    this.__ob__.dep.notify()
+    return result
   }
 })
 
