@@ -1,5 +1,5 @@
 import { observer } from './observe/index'
-
+import { nextTick } from './utils/nextTick'
 export function initState(vm){
   let options = vm.$options
   if(options.props){
@@ -67,4 +67,10 @@ function initComputed(vm){
 
 function initWatch(vm){
 
+}
+
+export function stateMixin(Vue){
+  Vue.prototype.$nextTick = function(cb){
+    nextTick(cb)
+  }
 }

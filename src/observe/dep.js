@@ -6,7 +6,6 @@ export class Dep {
     // 存储所有的Watcher
     this.subs = []
     this.id = id++
-    console.log(id)
   }
   addSub(watcher){
     this.subs.push(watcher)

@@ -46,7 +46,7 @@ function defineReactive(data, key, value){
       if(Dep.target){
         dep.depend()
         if(childDep.dep){
-          childDep.dep.depend()
+          childDep.dep.depend()  // 数组中的对象收集依赖
         }
       }
       return value
@@ -60,4 +60,5 @@ function defineReactive(data, key, value){
       dep.notify()
     }
   })
+  console.log(dep)
 }
