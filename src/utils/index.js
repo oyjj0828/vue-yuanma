@@ -15,16 +15,16 @@ starts.data = function(parentVal, childVal){
   return childVal
 }
 
-starts.methods = function(){
-
+starts.methods = function(parentVal, childVal){
+  return childVal
 }
 
 starts.computed = function(){
 
 }
 
-starts.watch = function(){
-
+starts.watch = function(parentVal, childVal){
+  return childVal
 }
 
 starts.props = function(){

@@ -7,35 +7,19 @@
   <title>Document</title>
 </head>
 <body>
-  <div id="app" class="app" style="color: red; font-size: 20px;">
-    {{ message }}
-    12345
-    {{ obj }}
-    {{ arr }}
-    {{ arr2 }}
-    <h1>44</h1>
-    <div>
-      <h2>55</h2>
-    </div>
-    <div></div>
-  </div>
+  <div id="app">{{ }}</div>
   <script src="dist/vue.js"></script>
   <script>
-    Vue.mixin({
-      created(){
-        console.log('mixin created')
-      }
-    })
     let vm = new Vue({
-      el: "#app",
-      data: {
-        message: "Hello Vue.js!",
-        obj:{a:1},
-        arr: [1,2,3],
-        arr2: [{a:1}, [1,2,3]]
+      el:'#app',
+      data:{
+        a:1,
+        b:2
       },
-      created(){
-        console.log('created')
+      computed: {
+        c(){
+          return this.a + this.b
+        }
       }
     })
   </script>

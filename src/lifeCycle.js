@@ -9,7 +9,9 @@ export function mountComponent(vm,el){
   let updateComponent = ()=>{
     vm._update(vm._render())
   }
-  new Watcher(vm,updateComponent,()=>{},true)  // true标识是否为渲染Watcher
+  new Watcher(vm,updateComponent,()=>{
+    callHook(vm,'updated')
+  },true)  // true标识是否为渲染Watcher
   // 调用mounted钩子
   callHook(vm,'mounted')
 }

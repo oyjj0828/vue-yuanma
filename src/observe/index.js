@@ -60,5 +60,4 @@ function defineReactive(data, key, value){
       dep.notify()
     }
   })
-  console.log(dep)
 }

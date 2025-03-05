@@ -7,6 +7,7 @@
  * @returns {Watcher}
  */
 import { pushTarget, popTarget } from "./dep"
+import { nextTick } from "../utils/nextTick"
 
 let id = 0
 
@@ -16,22 +17,39 @@ export default class Watcher {
     this.exprOrFn = updateComponent
     this.cb = cb
     this.options = options
+    this.user = options.user
     this.id = id++
     this.deps = []
     this.depsId = new Set()
-    if(typeof updateComponent === 'function'){
-      this.getter = updateComponent
+    if(typeof this.exprOrFn === 'function'){
+      this.getter = this.exprOrFn
     }
-    this.get()
+    else{
+      this.getter = function(){
+        let path = this.exprOrFn.split('.')
+        let obj = vm
+        for(let i=0;i<path.length;i++){
+          obj = obj[path[i]]
+        }
+        return obj
+      }
+    }
+    this.value = this.get()
   }
   // 初次渲染
   get(){
     pushTarget(this)
-    this.getter()
+    let value = this.getter()  // 新值
     popTarget()
+    return value
   }
   run(){
-    this.get()
+    let newVal = this.get()
+    let oldVal = this.value  // 旧值
+    this.value = newVal
+    if(this.user){
+      this.cb.call(this.vm, newVal, oldVal)
+    }
   }
   // 更新
   update(){
@@ -52,7 +70,10 @@ let queue = []
 let pending = false
 
 function flushSchedulerQueue(){
-  queue.forEach(watcher => watcher.run())
+  queue.forEach(watcher => {
+    watcher.run()
+    !watcher.user && watcher.cb && watcher.cb.call(watcher.vm)
+  })
   has = {}
   queue = []
   pending = false

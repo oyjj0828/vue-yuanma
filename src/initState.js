@@ -1,5 +1,6 @@
 import { observer } from './observe/index'
 import { nextTick } from './utils/nextTick'
+import Watcher from './observe/watcher'
 export function initState(vm){
   let options = vm.$options
   if(options.props){
@@ -62,15 +63,56 @@ function proxy(target, sourceKey, key){
 }
 
 function initComputed(vm){
+  let computed = vm.$options.computed
+  for(let key in computed){
+    Object.defineProperty(vm, key, {
+      get(){ 
+        typeof computed[key] === 'function' ? computed[key] : computed[key].get
+      },
+      set(){
 
+      }
+    })
+  }
 }
 
 function initWatch(vm){
+  for(let key in vm.$options.watch){
+    const userDef = vm.$options.watch[key]
+    let handler = userDef
+    if(Array.isArray(userDef)){
+      handler.forEach(item=>{
+        createWatcher(vm, key, item)
+      })
+    }
+    else{
+      createWatcher(vm, key, handler)
+    }
+  }
+}
 
+function createWatcher(vm, exprOrFn, handler, options){
+  if (typeof handler === 'object'){
+    options = handler
+    handler = handler.handler
+  }
+  else if (typeof handler === 'string'){
+    handler = vm[handler]
+  }
+  return vm.$watch(exprOrFn, handler, options)
 }
 
 export function stateMixin(Vue){
   Vue.prototype.$nextTick = function(cb){
     nextTick(cb)
+  }
+  Vue.prototype.$watch = function(exprOrFn,handler,options={}){
+    let vm = this
+    options = {...options, user:true}
+    let watcher = new Watcher(vm, exprOrFn, handler, options)
+    console.log(watcher)
+    if(options.immediate){
+      watcher.run()
+    }
   }
 }

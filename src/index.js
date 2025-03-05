@@ -3,6 +3,9 @@ import { lifecycleMixin } from "./lifeCycle"
 import { renderMixin } from "./vnode/index"
 import { initGlobalApi } from "./global/index"
 import { stateMixin } from "./initState"
+import { compileToFunction } from "./compiler/index"
+import { createElm } from './vnode/patch'
+import { patch } from './vnode/patch'
 
 // src/main.js
 function Vue(options){

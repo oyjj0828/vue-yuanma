@@ -56,6 +56,8 @@ function createASTElement(tagName, attrs) {
 }
 
 function parseHTML(html) {
+  stack = []
+  root = null
   while (html) {
     let textEnd = html.indexOf('<')
     if (textEnd === 0) {
